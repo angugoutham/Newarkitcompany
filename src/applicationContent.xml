@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ctx="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-2.5.xsd ">
+	
+	<bean id="SqlBean" class="com.connection.FEBRSDbquery">
+		
+		<property name="insertQuery" value="INSERT INTO customer (fname,lname,username,password,EMAIL,address,phone,status)VALUES(?,?,?,?,?,?,?,?)"></property>
+		<property name="updateQuery" value="UPDATE customer SET fname=?,lname=?,username=?,EMAIL=?,address=?,phone=?,status=? WHERE cid=?"></property>
+		<property name="insertcreditcardQuery" value="INSERT INTO creditcard (cid,creditcardnumber,secnumber,ownername,CCTYPE,ccADDRESS,EXPDATE)VALUES(?,?,?,?,?,?,?)"></property>
+		<property name="searchQuery" value="SELECT * FROM customer WHERE USERNAME=? AND PASSWORD=?"></property>	
+		<property name="insertshippingdetails" value="INSERT INTO Shipping_address(cusid,saname,recipientname,street,snumber,city,zip,state,country)VALUES(?,?,?,?,?,?,?,?,?)"></property> 
+		<property name="getproducts" value="select * from product"></property>
+		<property name="updateproduct" value="UPDATE product SET Pquantity = Pquantity -? WHERE pid=?"></property>
+		<property name="getcreditcardnumber" value="select creditcardnumber from creditcard where cid=?"></property>
+		<property name="getshippingname" value="select saname from Shipping_address where cusid=?"></property>
+		<property name="insertintocart" value="INSERT INTO cart(cid,shippingaddressname,ccnumber,tstatus,tdate)values(?,?,?,?,?)"></property>
+		<property name="getcartinfo" value="select * from cart where cartid=?"></property>
+		<property name="getofferprice" value="select offerprice from product where pid=?"></property>
+		<property name="getactualprice" value="select pprice from product where pid=?"></property>
+		<property name="insertappears" value="insert into appears_in(cartid,pid,quantity,pricesold)values(?,?,?,?)"></property>
+		<property name="getallproductdetails" value="select * from appears_in where cartid=?"></property>
+		<property name="getoldertransaction" value="select * from cart where cid=?"></property>
+		<property name="getpurcahseproductname" value="select pname from appears_in,product where appears_in.pid=product.pid and cartid=?"></property>
+		<property name="inserintocreditline" value="insert into silver_and_above(cid,creditline)values(?,?)"></property>
+		<property name="getcreditline" value="select creditline from silver_and_above where cid=?"></property>
+		<property name="query1" value="SELECT  pname,p.PID,SUM(QUANTITY) FroM appears_in as a,product as p where p.pid=a.PID and CARTID IN(SELECT CARTID as Cart FROM CART WHERE tDate BETWEEN ? AND ? )GROUP BY PID ORDER BY QUANTITY DESC LIMIT 1; "></property>
+		<property name="query2" value="SELECT pname, p.PID,COUNT(CID)  FROM APPEARS_IN AS A,CART AS C,product as p where p.pid=a.PID and  A.CARTID = C.CARTID AND tDate BETWEEN ? AND ? GROUP BY PID ORDER BY COUNT(CID)DESC;"></property>
+		<property name="query3" value="select fname,c.cid,sum(pricesold) from cart as c,appears_in as a,customer as cu where c.cartid=a.cartid and c.cid=cu.cid and tdate between ? AND ? group by cid order by sum(pricesold) desc LIMIT 10;"></property>
+		<property name ="query4" value="select zip,count(*) from Shipping_address as s,cart as c where s.cUSID=c.cid and tdate between ? and ? group by zip ORDER BY COUNT(*) DESC LIMIT 5;"></property>
+		<property name="query5" value="select p.pid,p.ptype,avg(pricesold) from product as p left outer join appears_in as a on p.pid=a.pid left outer join cart as c on a.cartid=c.cartid where tdate between ? and ? group by ptype;"></property>
+		</bean> 
+
+</beans>
